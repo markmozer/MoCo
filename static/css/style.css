@@ -1,0 +1,52 @@
+/* Color Scheme */
+/* Primary Colors */
+--dark-purple: #363062;
+--mid-purple: #4D4C7D;
+--light-purple: #435585;
+--blue: #818FB4;
+--cream: #F5E8C7;
+--light-gray: #F5F5F5;
+--orange: #F99417;
+
+* {
+  font-family: "Noto Sans Display", sans serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+
+body {
+    background-color: var(--light-gray);
+    color: var(--dark-purple);
+}
+
+a {
+    color: var(--orange);
+}
+
+.navbar, .footer {
+    background-color: var(--mid-purple);
+}
+
+.hero {
+    background-color: var(--light-purple);
+    color: var(--cream);
+}
+
+.feature {
+    background-color: var(--blue);
+    color: var(--light-gray);
+}
+
+.btn-primary {
+    background-color: var(--blue);
+    border-color: var(--blue);
+}
+
+.btn-primary:hover {
+    background-color: var(--dark-purple);
+    border-color: var(--dark-purple);
+}
