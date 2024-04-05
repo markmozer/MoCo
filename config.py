@@ -8,3 +8,4 @@ class Config(object):
     MSAL_TENANT_ID = os.environ.get('MSAL_TENANT_ID')
     MSAL_CLIENT_SECRET = os.environ.get('MSAL_CLIENT_SECRET')
     SECURITY_PASSWORD_SALT = os.environ.get('SECURITY_PASSWORD_SALT')
+    UPN = os.environ.get('USER_PRINCIPAL_NAME')

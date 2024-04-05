@@ -49,7 +49,7 @@ class MSGraphAPI():
         }
 
         response = requests.post(
-            'https://graph.microsoft.com/v1.0/users/mark@mozer-consulting.com/sendMail',
+            f'https://graph.microsoft.com/v1.0/users/{Config.UPN}/sendMail',
             headers=headers,
             json=email_data
         )

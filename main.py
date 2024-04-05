@@ -128,9 +128,9 @@ def register():
 
         login_user(new_user)
 
-        flash("A confirmation email has been sent via email.", "success")
+        flash(f'A confirmation email has been sent to {new_user.username}.', 'success')
 
-        return redirect(url_for('home'))
+        return redirect(url_for('inactive'))
     return render_template('register.html', form=form)
 
 
@@ -156,7 +156,7 @@ def resend_confirmation():
     mail_api = MSGraphAPI()
     mail_api.send_email(subject=subject, body=html, recipient=current_user.username)
 
-    flash("A new confirmation email has been sent.", "success")
+    flash(f'A new confirmation email has been sent to {current_user.username}.', 'success')
     return redirect(url_for("inactive"))
 
 
@@ -247,4 +247,4 @@ def create_admin():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
