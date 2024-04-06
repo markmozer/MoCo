@@ -7,19 +7,26 @@
 {% block content %}
 
 
+<main>
+  <div class="container py-4">
 
-<main class="mb-4">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-8 mx-auto">
+
+    <div class="container-fluid form-signin p-5 mb-4 bg-body-tertiary rounded-3">
+      <div class="row px-3">
+        <img src="{{ url_for('static', filename='assets/logo_and_text.png') }}" width="200" />
+      </div>
+      <div class="container-fluid py-5">
         <!--Rendering the registration form here-->
-        {{render_form(form, novalidate=True, button_map={"submit": "dark"}) }}
+        {{render_form(form, extra_classes="", novalidate=True, button_map={"submit": "dark"}) }}
+      </div>
+      <div class="row px-3">
+        <p>New visitor? Register <a href="{{ url_for('register') }}">here</a>!</p>
       </div>
     </div>
+
+
+
   </div>
 </main>
-
-
-
 
 {% endblock %}
