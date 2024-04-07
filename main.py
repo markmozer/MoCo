@@ -161,22 +161,27 @@ def resend_confirmation():
 
 
 @app.route("/confirm/<token>")
-@login_required
 def confirm_email(token):
-    if current_user.is_confirmed:
+    email = confirm_token(token)
+    result = db.session.execute(db.select(User).where(User.username == email))
+    user = result.scalar()
+    if not user:
+        flash("The confirmation link is invalid or has expired.", "danger")
+        return redirect(url_for("home"))
+    if user.is_confirmed:
         flash("Account already confirmed.", "success")
         return redirect(url_for("home"))
-    email = confirm_token(token)
-    user = User.query.filter_by(username=current_user.username).first_or_404()
-    if user.username == email:
-        user.is_confirmed = True
-        user.confirmed_on = datetime.now()
-        db.session.add(user)
-        db.session.commit()
-        flash("You have confirmed your account. Thanks!", "success")
-    else:
-        flash("The confirmation link is invalid or has expired.", "danger")
+    user.is_confirmed = True
+    user.confirmed_on = datetime.now()
+    db.session.add(user)
+    db.session.commit()
+    flash("You have confirmed your account. Thanks!", "success")
     return redirect(url_for("home"))
+
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template("404.html")
 
 
 @app.route("/login", methods=['GET', 'POST'])
