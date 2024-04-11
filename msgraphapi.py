@@ -1,6 +1,7 @@
 from msal import ConfidentialClientApplication
 import requests
 from config import Config
+from typing import Optional
 
 GRAPH_ENDPOINT = 'https://graph.microsoft.com/v1.0/me/sendMail'
 
@@ -28,11 +29,18 @@ class MSGraphAPI():
     def __init__(self):
         self.access_token = get_access_token()
 
-    def send_email(self, subject, body, recipient):
+    def send_email(self, subject: str, body: str, to_recipients: list, cc_recipients: Optional[list] = None):
         headers = {
             'Authorization': f'Bearer {self.access_token}',
             'Content-Type': 'application/json'
         }
+
+        to_list = [{"emailAddress": {"address": recipient}} for recipient in to_recipients]
+
+        if cc_recipients:
+            cc_list = [{"emailAddress": {"address": recipient}} for recipient in cc_recipients]
+        else:
+            cc_list = []
 
         # Replace the following email details
         email_data = {
@@ -42,9 +50,8 @@ class MSGraphAPI():
                     "contentType": "HTML",
                     "content": body
                 },
-                "toRecipients": [
-                    {"emailAddress": {"address": recipient}}
-                ]
+                "toRecipients": to_list,
+                "ccRecipients": cc_list,
             }
         }
 

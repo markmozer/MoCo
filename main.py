@@ -7,7 +7,7 @@ from flask_wtf import FlaskForm
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String, Date, DateTime, Boolean
 from config import Config
-from wtforms import StringField, EmailField, PasswordField, SubmitField, DateField
+from wtforms import StringField, EmailField, PasswordField, SubmitField, DateField, TextAreaField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Regexp
 from werkzeug.security import generate_password_hash, check_password_hash
 from libgravatar import Gravatar
@@ -78,6 +78,14 @@ class LoginUserForm(FlaskForm):
     submit = SubmitField("Login")
 
 
+class ContactForm(FlaskForm):
+    name = StringField("Full name", validators=[DataRequired()])
+    email = EmailField("Email", validators=[DataRequired(), Email()])
+    phone = StringField("Phone number")
+    message = TextAreaField("Message", validators=[DataRequired()])
+    submit = SubmitField("Submit")
+
+
 with app.app_context():
     db.create_all()
 
@@ -94,9 +102,18 @@ def logout_required(func):
 
 
 # Routes
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def home():
-    return render_template('index.html')
+    form = ContactForm()
+    if request.method == 'POST':
+        html = render_template("contact_email.html", form=form)
+        subject = "Thank you for reaching out to Mozer Consulting"
+
+        mail_api = MSGraphAPI()
+        mail_api.send_email(subject=subject, body=html, to_recipients=[request.form.get('email')], cc_recipients=[Config.UPN])
+        return render_template('contact_email.html', form=form)
+        # return redirect(url_for('home'))
+    return render_template('index.html', form=form)
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -124,7 +141,7 @@ def register():
         subject = "Please confirm your email"
 
         mail_api = MSGraphAPI()
-        mail_api.send_email(subject=subject, body=html, recipient=new_user.username)
+        mail_api.send_email(subject=subject, body=html, to_recipients=[new_user.username])
 
         login_user(new_user)
 
@@ -154,7 +171,7 @@ def resend_confirmation():
     subject = "Please confirm your email"
 
     mail_api = MSGraphAPI()
-    mail_api.send_email(subject=subject, body=html, recipient=current_user.username)
+    mail_api.send_email(subject=subject, body=html, to_recipients=[current_user.username])
 
     flash(f'A new confirmation email has been sent to {current_user.username}.', 'success')
     return redirect(url_for("inactive"))
@@ -248,7 +265,6 @@ def create_admin():
             print(f"Admin with email {username} created successfully!")
         except Exception:
             print("Couldn't create admin user.")
-
 
 
 if __name__ == "__main__":
