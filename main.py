@@ -105,14 +105,15 @@ def logout_required(func):
 @app.route("/", methods=['GET', 'POST'])
 def home():
     form = ContactForm()
+    print(form.data.get('name'))
     if request.method == 'POST':
         html = render_template("contact_email.html", form=form)
         subject = "Thank you for reaching out to Mozer Consulting"
 
         mail_api = MSGraphAPI()
         mail_api.send_email(subject=subject, body=html, to_recipients=[request.form.get('email')], cc_recipients=[Config.UPN])
-        return render_template('contact_email.html', form=form)
-        # return redirect(url_for('home'))
+        flash("Your message has been sent successfully!", "success")
+        return redirect(url_for('home')+"#top")
     return render_template('index.html', form=form)
 
 
