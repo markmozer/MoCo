@@ -4,14 +4,15 @@
     <h5 class="pt-3">
         {{ now.year - 2001 }}+ years (international) experience in different lines of business, roles, end-to-end processes and project types.
     </h5>
-  <div class="accordion accordion-flush" id="accordionFlushExample">
+
+  <div class="accordion accordion-flush" id="accordionFlushExperience">
     <div class="accordion-item">
       <h2 class="accordion-header">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven">
           Employment History
         </button>
       </h2>
-      <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExperience">
         <div class="accordion-body">
             <table class="table">
               <thead>
@@ -101,46 +102,129 @@
     </div>
     <div class="accordion-item">
       <h2 class="accordion-header">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseTwo">
-          Lines of Business - Companies
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight">
+          Companies / Customers
         </button>
       </h2>
-      <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExperience">
         <div class="accordion-body">
-        <ul>
-            <li>High-Tech & Semiconductors
-            <ul>
-                <li>NXP</li>
-                <li>ASML</li>
-            </ul>
-            </li>
-        <li>Industry
-            <ul>
-                <li>Tata Steel</li>
-                <li>AkzoNobel</li>
-                <li>Evonik</li>
-                <li>Cargotec</li>
-            </ul>
-        </li>
-        <li>FMCG (Fast Moving Consumer Goods) & Retail
-            <ul>
-                <li>Unilever</li>
-                <li>PVH</li>
-            </ul>
-        </li>
-        <li>Services (Public / Professional)
-            <ul>
-                <li>Koninklijke Jaarbeurs</li>
-                <li>GVB</li>
-                <li>RET</li>
-            </ul>
-        </li>
-        <li>Trade
-            <ul>
-                <li>Medeco</li>
-            </ul>
-        </li>
-        </ul>
+            <div class="row">
+                <!--NXP-->
+                <div class="col-lg-4 my-4">
+                    <h6>
+                        <img src="{{ url_for('static', filename='/assets/logo_nxp_2024.png') }}" alt="NXP logo" height="24" class="mb-2"> NXP Semiconductors
+                        <span class="badge text-bg-dark ml-4">High-Tech</span>
+                    </h6>
+                    <span class="badge text-bg-primary px-1">S/4</span>
+                    <span class="badge text-bg-primary px-1">ECC</span><br>
+                    <span class="badge text-bg-light px-1">SD</span>
+                    <span class="badge text-bg-light px-1">PP-PI</span>
+                    <span class="badge text-bg-light px-1">MM</span>
+                    <span class="badge text-bg-light px-1">LE</span><br>
+                    <span class="badge text-bg-secondary px-1">M&A</span>
+                    <span class="badge text-bg-secondary px-1">Brownfield S/4</span><br>
+                    <span class="badge text-bg-success px-1">Lead Consultant</span>
+                </div>
+                <!--Teijin Aramid-->
+                <div class="col-lg-4 my-4">
+                    <h6>
+                        <img src="{{ url_for('static', filename='/assets/Teijin Aramid Logo.png') }}" alt="Teijin Aramid logo" height="24" class="mb-2">
+                        <span class="badge text-bg-dark ml-4">Industry</span>
+                    </h6>
+                    <span class="badge text-bg-primary px-1">S/4</span><br>
+                    <span class="badge text-bg-light px-1">MM</span>
+                    <span class="badge text-bg-light px-1">LE</span>
+                    <span class="badge text-bg-light px-1">TM</span>
+                    <span class="badge text-bg-light px-1">SD</span>
+                    <span class="badge text-bg-light px-1">PP-PI</span><br>
+                    <span class="badge text-bg-secondary px-1">Greenfield S/4</span><br>
+                    <span class="badge text-bg-success px-1">Workstream Lead</span>
+                </div>
+                <!--PVH-->
+                <div class="col-lg-4 my-4">
+                    <h6>
+                        <img src="{{ url_for('static', filename='/assets/PVH.png') }}" alt="PVH logo" height="24" class="mb-2"> Phillips-Van Heusen Co.
+                        <span class="badge text-bg-dark ml-4">Retail</span>
+                    </h6>
+                    <span class="badge text-bg-primary px-1">ECC</span><br>
+                    <span class="badge text-bg-light px-1">SD</span>
+                    <span class="badge text-bg-light px-1">MM</span>
+                    <span class="badge text-bg-light px-1">FI</span><br>
+                    <span class="badge text-bg-secondary px-1">BREXIT</span><br>
+                    <span class="badge text-bg-success px-1">Consultant</span>
+                </div>
+            </div>
+            <!--Tata Steel-->
+            <div class="row">
+                <div class="col-lg-4 my-4">
+                    <h6>
+                        <img src="{{ url_for('static', filename='/assets/Tata-Steel.png') }}" alt="Tata Steel logo" height="24" class="mb-2">
+                        <span class="badge text-bg-dark ml-4">Industry</span>
+                    </h6>
+                    <span class="badge text-bg-info px-1">ECC</span><br>
+                    <span class="badge text-bg-light px-1">SD</span>
+                    <span class="badge text-bg-light px-1">PP</span>
+                    <span class="badge text-bg-light px-1">MM</span>
+                    <span class="badge text-bg-light px-1">LE</span><br>
+                    <span class="badge text-bg-secondary px-1">Harmonization</span>
+                    <span class="badge text-bg-secondary px-1">SFC</span><br>
+                    <span class="badge text-bg-success px-1">Lead Consultant</span>
+                </div>
+                <!--AkzoNobel-->
+                <div class="col-lg-4 my-4">
+                    <h6>
+                        <img src="{{ url_for('static', filename='/assets/akzonobel-logo.png') }}" alt="AkzoNobel logo" height="24" class="mb-2">
+                        <span class="badge text-bg-dark ml-4">Industry</span>
+                    </h6>
+                    <span class="badge text-bg-info px-1">ECC</span><br>
+                    <span class="badge text-bg-light px-1">SD</span>
+                    <span class="badge text-bg-light px-1">MM</span><br>
+                    <span class="badge text-bg-secondary px-1">Tax Optimized Supply Chain</span>
+                    <span class="badge text-bg-secondary px-1">SAP SLO</span><br>
+                    <span class="badge text-bg-success px-1">Lead Consultant</span>
+
+                </div>
+                <!--Unilever-->
+                <div class="col-lg-4 my-4">
+                    <h6>
+                        <img src="{{ url_for('static', filename='/assets/Unilever.png') }}" alt="Unilever logo" height="24" class="mb-2"> Unilever
+                        <span class="badge text-bg-dark ml-4">FMCG</span>
+                    </h6>
+                    <span class="badge text-bg-info px-1">ECC</span><br>
+                    <span class="badge text-bg-light px-1">SD</span>
+                    <span class="badge text-bg-light px-1">MM</span>
+                    <span class="badge text-bg-light px-1">LE</span>
+                    <span class="badge text-bg-light px-1">PP</span><br>
+                    <span class="badge text-bg-secondary px-1">European Roll-out</span>
+                    <span class="badge text-bg-secondary px-1">Tax Optimized Supply Chain</span><br>
+                    <span class="badge text-bg-success px-1">Lead Consultant</span>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                <h6><span class="badge text-bg-dark ml-4">Industry</span></h6>
+                    <ul>
+                        <li>ASML</li>
+                        <li>Evonik</li>
+                        <li>Cargotec</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                <h6><span class="badge text-bg-dark ml-4">Services</span></h6>
+                    <ul>
+                        <li>Koninklijke Jaarbeurs</li>
+                        <li>GVB</li>
+                        <li>RET</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                <h6><span class="badge text-bg-dark ml-4">Trade</span></h6>
+                    <ul>
+                        <li>Medeco</li>
+                    </ul>
+                </div>
+            </div>
         </div>
       </div>
     </div>

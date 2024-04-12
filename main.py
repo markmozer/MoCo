@@ -111,7 +111,12 @@ def home():
         subject = "Thank you for reaching out to Mozer Consulting"
 
         mail_api = MSGraphAPI()
-        mail_api.send_email(subject=subject, body=html, to_recipients=[request.form.get('email')], cc_recipients=[Config.UPN])
+        mail_api.send_email(
+            subject=subject,
+            body=html,
+            to_recipients=[request.form.get('email')],
+            cc_recipients=[Config.UPN]
+        )
         flash("Your message has been sent successfully!", "success")
         return redirect(url_for('home')+"#top")
     return render_template('index.html', form=form)
