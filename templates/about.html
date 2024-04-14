@@ -1,17 +1,125 @@
-<div class="container px-4 py-5" id="aboutme">
-    <h2 class="pb-2 border-bottom">Nice to meet you…</h2>
-
-
-    <div class="row mb-3 text-left">
-      <div class="col-md-8 themed-grid-col">
-          <p>My name is Mark Mozer and I’m a passionate SAP expert and Supply Chain professional with {{ now.year - 2001 }}+ years of experience in designing, building and improving Supply Chains. On March 1st, 2018 I started Mozer Consulting to continue my career as a Freelance SAP Consultant eager to help you and your company to be more successful.</p>
-          <p>After finishing school in 1998 (Bachelor of Business Administration) I started my first job at Baan Business Innovation. Looking back, this job defined the direction of my career – aligning people, processes, systems and data. I realized however that I needed to develop additional skills and wanted to see different companies. In 1999 I started a two year Management Trainee-ship at Ormit. In that period I worked for Royal Dutch Airforce, ASML, ING Bank and Unilever.</p>
-          <p>In 2001 I joined Unilever as an inhouse consultant in a European SAP roll-out project. In total I spent seven years at Unilever in different roles (both IT and business) and different functional areas (procurement and demand & supply planning). The first five years on the Unilever pay-roll and two years as external consultant working for Accenture and ITVisors.</p>
-          <p>In 2009 I joined Magnus as Senior SAP Consultant in the logistics area and from 2012 till 2018 I lead the logistics practice as Managing Consultant. During my Magnus period I worked on challenging projects at a.o. Medeco, Tata Steel, AkzoNobel and Koninklijke Jaarbeurs.</p>
-          <p>End of 2017 I felt it was time for the next step and on March 1st, 2018 Mozer Consulting was born. My first assignment was a global integration project at NXP Semiconductors following an acquisition. In sixteen months with a lot of travelling to both US and Malaysia, the project was finished successfully.  </p>
-      </div>
-      <div class="col-6 col-md-4 themed-grid-col"><img src="{{ url_for('static', filename='/assets/Mark_upperbody.jpg') }}"></div>
-    </div>
+<div class="container px-2 py-2" id="about">
+    <h2 class="pb-2 border-bottom"><img class="me-3" src="{{ url_for('static', filename='/assets/svg/person-vcard.svg') }}"> About me</h2>
 </div>
 
-
+<section style="background-color: #F0F2F5;">
+  <div class="container py-5">
+    <div class="main-timeline-2">
+      <div class="timeline-2 left-2">
+        <div class="card">
+          <img src="{{ url_for('static',filename='/assets/schoolisover.webp')}}" class="card-img-top"
+            alt="Responsive image">
+          <div class="card-body p-4">
+            <h4 class="fw-bold mb-4">School is over</h4>
+            <p class="text-muted mb-4"><i class="far fa-clock" aria-hidden="true"></i> 1998 - 1999</p>
+            <p class="mb-0">
+              After finishing school in 1998 (Bachelor of Business Administration) I started my first job at
+              Baan Business Innovation. Here we developed methodologies and tools to simplify and speed-up ERP
+              implementations. Looking back, this job defined the direction of my career – aligning people,
+              processes, systems and data. I realized however that I needed to develop additional skills
+              and wanted to see different companies.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-2 right-2">
+        <div class="card">
+          <img src="{{ url_for('static',filename='/assets/trainee.webp') }}" class="card-img-top"
+            alt="Responsive image">
+          <div class="card-body p-4">
+            <h4 class="fw-bold mb-4">Management Trainee</h4>
+            <p class="text-muted mb-4"><i class="far fa-clock" aria-hidden="true"></i> 1999 - 2001</p>
+            <p class="mb-0">
+              In 1999 I started a two year Management Trainee-ship at Ormit. My first eight month assignment was
+              at Royal Dutch Airforce in a PMO role. After that I got my hands dirty on SAP for the first time at ASML.
+              As a member of the New Product Introduction team I worked hands-on with SAP to provide logistics support
+              to a development team from design to mass production phase. For my last assignment I joined a European
+              SAP implementation project for the ambient food and margarine division at Unilever. This is where I found
+              my calling!
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-2 left-2">
+        <div class="card">
+          <img src="{{ url_for('static',filename='/assets/fmcg.webp') }}" class="card-img-top"
+            alt="Responsive image">
+          <div class="card-body p-4">
+            <h4 class="fw-bold mb-4">The Unilever years</h4>
+            <p class="text-muted mb-4"><i class="far fa-clock" aria-hidden="true"></i> 2001 - 2008</p>
+            <p class="mb-2">
+              When I left Ormit I joined Unilever to continue working on the previously mentioned project as an inhouse
+              consultant. In 2003, after successful implementations in The Netherlands, Sweden and Finland, I was asked
+              to join Unilever NL as a team lead in the Supply & Demand Planning department. This was an amazing
+              experience, but after two years I realized SAP consulting and project work is what I wanted to do.
+            </p>
+            <p class="mb-2">
+              In 2005 I re-joined the European SAP project. A year later Unilever decided to outsource the project
+              to Accenture. I transferred to Accenture but after six years at Unilever I wanted to broaden my
+              horizon and see other companies. I joined ITVisors in 2007, but I was immediately hired back to
+              Accenture to continue my work at Unilever. Only in 2008 I said goodbye to Unilever after having
+              implemented SAP in 15 countries.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-2 right-2">
+        <div class="card">
+          <img src="{{ url_for('static',filename='/assets/SAP_consulting.webp') }}" class="card-img-top"
+            alt="Responsive image">
+          <div class="card-body p-4">
+            <h4 class="fw-bold mb-4"> SAP consultant @ Magnus</h4>
+            <p class="text-muted mb-4"><i class="far fa-clock" aria-hidden="true"></i> 2007 - 2018</p>
+            <p class="mb-2">
+              After a successful project at Evonik together with Improvium it was time to leave ITVisors.
+              In 2009 I joined Magnus as Senior SAP Consultant in the logistics area and from 2012 till 2018
+              I lead the logistics practice as Managing Consultant. During my Magnus period I worked on challenging
+              projects.
+            </p>
+            <p class="mb-2">
+              At Tata Steel we redesigned and harmonized the production planning and shopfloor control
+              processes.
+            </p>
+            <p class="mb-2">
+              At AkzoNobel I worked on an amazing project to implement a tax efficient supply chain. With the help
+              of SAP System Landscape Optimization (SLO) we completely changed the enterprise structure.
+            </p>
+            <p class="mb-2">
+              A greenfield SAP implementation at Koninklijke Jaarbeurs including a Mendix webshop with SAP integration.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-2 left-2">
+        <div class="card">
+          <img src="{{ url_for('static',filename='/assets/moco.png') }}" class="card-img-top"
+            alt="Responsive image">
+          <div class="card-body p-4">
+            <h4 class="fw-bold mb-4">Mozer Consulting</h4>
+            <p class="text-muted mb-4"><i class="far fa-clock" aria-hidden="true"></i> 2018 - Now</p>
+            <p class="mb-2">
+              End of 2017 I felt it was time for the next step and on March 1st, 2018 Mozer Consulting was born.
+              My first assignment was a global integration project at NXP Semiconductors. In 16 months we successfully
+              integrated the former Freescale Semiconductors production facilities in Arizona, Texas, Malaysia and
+              China in the NXP SAP system.
+            </p>
+            <p class="mb-2">
+              In october 2020 I joined PVH Europe to prepare for the impact of BREXIT on the Order to Cash processes
+              in Retail, Wholesale and E-Commerce flows.
+            </p>
+            <p class="mb-2">
+              In april 2021 I joined Deloitte as workstream lead for a greenfield SAP S/4HANA implementation at
+              Teijin Aramid. My team was responsible for inventory and warehouse management, all intra- and
+              intercompany goodsflows, transportation management and toll-manufacturing. After successful deployment
+              in two factories and preparations for the third one I left in april 2023 to go back to NXP.
+            </p>
+            <p class="mb-2">
+              I joined NXP Semiconductors for a challenging brownfield SAP S/4HANA implementation going live with
+              a big-bang in january 2024.
+            </p>
+          </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
