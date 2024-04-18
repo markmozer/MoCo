@@ -41,15 +41,6 @@ a {
     color: var(--light-gray);
 }
 
-.btn-primary {
-    background-color: var(--blue);
-    border-color: var(--blue);
-}
-
-.btn-primary:hover {
-    background-color: var(--dark-purple);
-    border-color: var(--dark-purple);
-}
 
 .form-signin {
     max-width: 500px;
@@ -58,6 +49,10 @@ a {
 
 .message-field {
     height: 200px;
+}
+
+.disabled-field {
+    background-color: #F5F5F5;
 }
 
 

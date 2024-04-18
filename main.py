@@ -1,8 +1,8 @@
-from datetime import datetime, UTC
+from datetime import datetime, UTC, date
 from flask import Flask, flash, render_template, redirect, request, url_for
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required
+from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required, confirm_login
 from flask_wtf import FlaskForm
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String, Date, DateTime, Boolean
@@ -14,7 +14,6 @@ from libgravatar import Gravatar
 from msgraphapi import MSGraphAPI
 from functools import wraps
 from moco_token import generate_token, confirm_token
-
 
 
 class Base(DeclarativeBase):  # noqa
@@ -40,9 +39,13 @@ class User(UserMixin, db.Model):
     is_admin: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     is_confirmed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     confirmed_on: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    firstname: Mapped[str] = mapped_column(String(100), nullable=True, unique=False)
+    lastname: Mapped[str] = mapped_column(String(100), nullable=True, unique=False)
+    mobile: Mapped[str] = mapped_column(String(100), nullable=True, unique=False)
+    date_of_birth: Mapped[date] = mapped_column(Date, nullable=True, unique=False)
+
 
     def __init__(self, username, password, is_admin=False, is_confirmed=False, confirmed_on=None):
-
         # Hash and salt the password
         hash_and_salted_password = generate_password_hash(
             password,
@@ -50,10 +53,10 @@ class User(UserMixin, db.Model):
             salt_length=8
         )
         self.username = username
-        self.password = hash_and_salted_password            # noqa
-        self.created_on = datetime.now(tz=UTC)              # noqa
-        self.is_admin = is_admin                            # noqa
-        self.is_confirmed = is_confirmed                    # noqa
+        self.password = hash_and_salted_password  # noqa
+        self.created_on = datetime.now(tz=UTC)  # noqa
+        self.is_admin = is_admin  # noqa
+        self.is_confirmed = is_confirmed  # noqa
         self.confirmed_on = confirmed_on
 
     def __repr__(self):
@@ -76,6 +79,27 @@ class LoginUserForm(FlaskForm):
     username = EmailField("Username (e-mail)", validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Login")
+
+
+class ChgContactDetailsForm(FlaskForm):
+    username = EmailField("Username (e-mail)", render_kw={'readonly': True, 'class': 'disabled-field'}, validators=[])
+    firstname = StringField("Firstname", validators=[DataRequired()])
+    lastname = StringField("Lastname", validators=[DataRequired()])
+    mobile = StringField("Mobile number", validators=[Regexp(r"^\+[0-9]+\([0-9]+\)[0-9]+$", message="Regex message!")])
+    date_of_birth = DateField("Date of birth", validators=[])
+    submit1 = SubmitField("Save changes")
+
+
+class ChgPasswordForm(FlaskForm):
+    old_password = PasswordField("Old password")
+    password = PasswordField("New Password", validators=[
+        DataRequired(),
+        Length(min=8),
+        EqualTo(fieldname='confirm'),
+        Regexp(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", message="Regex message!")
+    ])
+    confirm = PasswordField('Confirm Password')
+    submit2 = SubmitField("Change Password")
 
 
 class ContactForm(FlaskForm):
@@ -105,7 +129,6 @@ def logout_required(func):
 @app.route("/", methods=['GET', 'POST'])
 def home():
     form = ContactForm()
-    print(form.data.get('name'))
     if request.method == 'POST':
         html = render_template("contact_email.html", form=form)
         subject = "Thank you for reaching out to Mozer Consulting"
@@ -118,7 +141,7 @@ def home():
             cc_recipients=[Config.UPN]
         )
         flash("Your message has been sent successfully!", "success")
-        return redirect(url_for('home')+"#top")
+        return redirect(url_for('home') + "#top")
     return render_template('index.html', form=form)
 
 
@@ -229,9 +252,53 @@ def login():
 
 @app.route("/logout")
 def logout():
-    print('Test')
     logout_user()
     return redirect(url_for('home'))
+
+
+@app.route("/profile", methods=['GET', 'POST'])
+@login_required
+def profile():
+    form = ChgContactDetailsForm()
+    if form.validate_on_submit():
+        # Handle Form submission
+        current_user.firstname = form.firstname.data
+        current_user.lastname = form.lastname.data
+        current_user.mobile = form.mobile.data
+        current_user.date_of_birth = form.date_of_birth.data
+        db.session.commit()
+        flash("Contact details updated", "success")
+        redirect(url_for('profile'))
+
+    form.username.data = current_user.username
+    form.firstname.data = current_user.firstname
+    form.lastname.data = current_user.lastname
+    form.date_of_birth.data = current_user.date_of_birth
+    form.mobile.data = current_user.mobile
+    return render_template('profile.html', form=form)
+
+
+@app.route("/changepwd", methods=['GET', 'POST'])
+@login_required
+def changepwd():
+    form = ChgPasswordForm()
+    if form.validate_on_submit():
+        # Handle Form2 submission
+        if not check_password_hash(current_user.password, form.old_password.data):
+            flash("The old password you've entered is incorrect! Please try again", "warning")
+        else:
+            # Hash and salt the password
+            hash_and_salted_password = generate_password_hash(
+                form.password.data,
+                method='pbkdf2:sha256',
+                salt_length=8
+            )
+
+            current_user.password = hash_and_salted_password
+            db.session.commit()
+            flash("Your password is changed!", "success")
+        return redirect(url_for('changepwd'))
+    return  render_template('changepwd.html', form=form)
 
 
 @login_manager.user_loader
