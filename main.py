@@ -300,6 +300,21 @@ def changepwd():
         return redirect(url_for('changepwd'))
     return  render_template('changepwd.html', form=form)
 
+@app.route('/copyright')
+def copyright():
+    return render_template('copyright.html')
+
+@app.route('/disclaimer')
+def disclaimer():
+    return render_template('disclaimer.html')
+
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
+
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
 
 @login_manager.user_loader
 def load_user(user_id):
