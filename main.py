@@ -43,6 +43,7 @@ class User(UserMixin, db.Model):
     lastname: Mapped[str] = mapped_column(String(100), nullable=True, unique=False)
     mobile: Mapped[str] = mapped_column(String(100), nullable=True, unique=False)
     date_of_birth: Mapped[date] = mapped_column(Date, nullable=True, unique=False)
+    gender: Mapped[str] = mapped_column(String(10), nullable=False, unique=False, default='unspecified')
 
 
     def __init__(self, username, password, is_admin=False, is_confirmed=False, confirmed_on=None):

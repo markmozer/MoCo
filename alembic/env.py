@@ -1,3 +1,5 @@
+import os
+
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -25,6 +27,22 @@ target_metadata = None
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
+# Function to adjust the database URL
+def adjust_database_url(original_url):
+    # Check if the URL is for SQLite
+    if original_url.startswith("sqlite:///"):
+        # Append '/instance' to the path within the URL
+        path_parts = original_url.split("///")
+        adjusted_url = f"{path_parts[0]}///instance/{path_parts[1]}"
+        return adjusted_url
+    return original_url
+
+
+# Get database URL from environment variable
+database_url = os.getenv('DB_URI', 'sqlite:///moco.db')  # Default fallback if not set
+adjusted_url = adjust_database_url(database_url)
+config.set_main_option('sqlalchemy.url', adjusted_url)
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
@@ -39,6 +57,7 @@ def run_migrations_offline() -> None:
 
     """
     url = config.get_main_option("sqlalchemy.url")
+
     print(f'The database url for alembic is set to {url}')
     context.configure(
         url=url,
