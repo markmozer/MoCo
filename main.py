@@ -114,6 +114,17 @@ with app.app_context():
     db.create_all()
 
 
+def admin_required(func):
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not current_user.is_admin:
+            flash("You are not authorized for this page.", "error")
+            return redirect(url_for("home"))
+        return func(*args, **kwargs)
+
+    return decorated_function
+
+
 def logout_required(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
@@ -225,9 +236,15 @@ def confirm_email(token):
     return redirect(url_for("home"))
 
 
+@app.errorhandler(401)
+def not_found(e):
+    return render_template("401.html")
+
+
 @app.errorhandler(404)
 def not_found(e):
     return render_template("404.html")
+
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -299,6 +316,15 @@ def changepwd():
             flash("Your password is changed!", "success")
         return redirect(url_for('changepwd'))
     return  render_template('changepwd.html', form=form)
+
+
+@app.route('/admin')
+@admin_required
+def admin():
+    result = db.session.execute(db.select(User))
+    users = result.scalars()
+    return render_template('admin.html', users=users)
+
 
 @app.route('/copyright')
 def copyright():

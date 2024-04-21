@@ -52,6 +52,10 @@
               <li><a class="dropdown-item" href="{{ url_for('changepwd') }}">Change Password</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="{{ url_for('logout') }}">Log out</a></li>
+              {% if current_user.is_admin: %}
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{{ url_for('admin') }}">Admin</a></li>
+              {% endif %}
             {% endif %}
           </ul>
       </div>
