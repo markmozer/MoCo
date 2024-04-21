@@ -7,7 +7,7 @@ from flask_wtf import FlaskForm
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String, Date, DateTime, Boolean
 from config import Config
-from wtforms import StringField, EmailField, PasswordField, SubmitField, DateField, TextAreaField
+from wtforms import StringField, EmailField, PasswordField, SubmitField, DateField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Regexp
 from werkzeug.security import generate_password_hash, check_password_hash
 from libgravatar import Gravatar
@@ -88,6 +88,7 @@ class ChgContactDetailsForm(FlaskForm):
     lastname = StringField("Lastname", validators=[DataRequired()])
     mobile = StringField("Mobile number", validators=[Regexp(r"^\+[0-9]+\([0-9]+\)[0-9]+$", message="Regex message!")])
     date_of_birth = DateField("Date of birth", validators=[])
+    gender = SelectField(u'Gender', choices=['Male', 'Female', 'Unspecified'])
     submit1 = SubmitField("Save changes")
 
 
@@ -284,6 +285,7 @@ def profile():
         current_user.lastname = form.lastname.data
         current_user.mobile = form.mobile.data
         current_user.date_of_birth = form.date_of_birth.data
+        current_user.gender = form.gender.data
         db.session.commit()
         flash("Contact details updated", "success")
         redirect(url_for('profile'))
@@ -293,6 +295,10 @@ def profile():
     form.lastname.data = current_user.lastname
     form.date_of_birth.data = current_user.date_of_birth
     form.mobile.data = current_user.mobile
+    if current_user.gender is None:
+        form.gender.data = 'Unspecified'
+    else:
+        form.gender.data = current_user.gender
     return render_template('profile.html', form=form)
 
 
