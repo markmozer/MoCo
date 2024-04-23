@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 
+{% block custom_styles %}
+
+.custom-container {
+    max-width: 700px;
+    padding: 1rem;
+}
+
+{% endblock %}
+
 {% block title %}Inactive{% endblock %}
 
 {% block content %}
@@ -10,9 +19,9 @@
   <div class="container py-4">
 
 
-    <div class="container-fluid form-signin p-5 mb-4 bg-body-tertiary rounded-3">
+    <div class="container-fluid custom-container p-5 mb-4 bg-body-tertiary rounded-3">
       <div class="row px-3">
-        <img src="{{ url_for('static', filename='assets/logo_and_text.png') }}" width="200" />
+        <img src="{{ url_for('static', filename='assets/logo_moco_black_text_below.png') }}" width="200" />
       </div>
       <div class="container-fluid py-5">
         <h1>Welcome!</h1>

@@ -1,19 +1,21 @@
+from msal import ConfidentialClientApplication
+import requests
+from typing import Optional
+from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, UTC, date
 from flask import Flask, flash, render_template, redirect, request, url_for
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required, confirm_login
+from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required
 from flask_wtf import FlaskForm
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Date, DateTime, Boolean
 from config import Config
 from wtforms import StringField, EmailField, PasswordField, SubmitField, DateField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Regexp
 from werkzeug.security import generate_password_hash, check_password_hash
 from libgravatar import Gravatar
-from msgraphapi import MSGraphAPI
 from functools import wraps
-from moco_token import generate_token, confirm_token
 
 
 class Base(DeclarativeBase):  # noqa
@@ -43,8 +45,7 @@ class User(UserMixin, db.Model):
     lastname: Mapped[str] = mapped_column(String(100), nullable=True, unique=False)
     mobile: Mapped[str] = mapped_column(String(100), nullable=True, unique=False)
     date_of_birth: Mapped[date] = mapped_column(Date, nullable=True, unique=False)
-    gender: Mapped[str] = mapped_column(String(10), nullable=False, unique=False, default='unspecified')
-
+    gender: Mapped[str] = mapped_column(String(10), nullable=False, unique=False, default='U')
 
     def __init__(self, username, password, is_admin=False, is_confirmed=False, confirmed_on=None):
         # Hash and salt the password
@@ -70,7 +71,10 @@ class RegisterUserForm(FlaskForm):
         DataRequired(),
         Length(min=8),
         EqualTo(fieldname='confirm'),
-        Regexp(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", message="Regex message!")
+        Regexp(
+            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+            message="Field must contain uppercase, lowercase, number and special character!"
+        )
     ])
     confirm = PasswordField('Confirm Password')
     submit = SubmitField("Register")
@@ -86,9 +90,10 @@ class ChgContactDetailsForm(FlaskForm):
     username = EmailField("Username (e-mail)", render_kw={'readonly': True, 'class': 'disabled-field'}, validators=[])
     firstname = StringField("Firstname", validators=[DataRequired()])
     lastname = StringField("Lastname", validators=[DataRequired()])
-    mobile = StringField("Mobile number", validators=[Regexp(r"^\+[0-9]+\([0-9]+\)[0-9]+$", message="Regex message!")])
+    mobile = StringField("Mobile number +#(#)#",
+                         validators=[Regexp(r"^\+[0-9]+\([0-9]+\)[0-9]+$", message="Regex message!")])
     date_of_birth = DateField("Date of birth", validators=[])
-    gender = SelectField(u'Gender', choices=['Male', 'Female', 'Unspecified'])
+    gender = SelectField(u'Gender', choices=[('M', 'Male'), ('F', 'Female'), ('U', 'Unspecified')])
     submit1 = SubmitField("Save changes")
 
 
@@ -98,7 +103,9 @@ class ChgPasswordForm(FlaskForm):
         DataRequired(),
         Length(min=8),
         EqualTo(fieldname='confirm'),
-        Regexp(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", message="Regex message!")
+        Regexp(
+            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+            message="Field must contain uppercase, lowercase, number and special character!")
     ])
     confirm = PasswordField('Confirm Password')
     submit2 = SubmitField("Change Password")
@@ -110,6 +117,63 @@ class ContactForm(FlaskForm):
     phone = StringField("Phone number")
     message = TextAreaField("Message", validators=[DataRequired()])
     submit = SubmitField("Submit")
+
+
+class MSGraphAPI:
+    def __init__(self):
+        self.access_token = self.get_access_token()
+
+    def get_access_token(self):         # noqa
+        authority = f'https://login.microsoftonline.com/{Config.MSAL_TENANT_ID}'
+        scopes = ['https://graph.microsoft.com/.default']
+        msal_app = ConfidentialClientApplication(
+            Config.MSAL_CLIENT_ID,
+            authority=authority,
+            client_credential=Config.MSAL_CLIENT_SECRET
+        )
+        token_response = msal_app.acquire_token_for_client(scopes=scopes)
+        access_token = token_response['access_token']
+
+        if not access_token:
+            print("Failed to acquire token")
+            return None
+        else:
+            print("Token acquired for graph API")
+            return access_token
+
+    def send_email(self, subject: str, body: str, to_recipients: list, cc_recipients: Optional[list] = None):
+        headers = {
+            'Authorization': f'Bearer {self.access_token}',
+            'Content-Type': 'application/json'
+        }
+
+        to_list = [{"emailAddress": {"address": recipient}} for recipient in to_recipients]
+
+        if cc_recipients:
+            cc_list = [{"emailAddress": {"address": recipient}} for recipient in cc_recipients]
+        else:
+            cc_list = []
+
+        # Replace the following email details
+        email_data = {
+            "message": {
+                "subject": subject,
+                "body": {
+                    "contentType": "HTML",
+                    "content": body
+                },
+                "toRecipients": to_list,
+                "ccRecipients": cc_list,
+            }
+        }
+
+        response = requests.post(
+            f'https://graph.microsoft.com/v1.0/users/{Config.UPN}/sendMail',
+            headers=headers,
+            json=email_data
+        )
+
+        print(response.status_code, response.reason)
 
 
 with app.app_context():
@@ -136,6 +200,22 @@ def logout_required(func):
         return func(*args, **kwargs)
 
     return decorated_function
+
+
+def generate_token(email):
+    serializer = URLSafeTimedSerializer(Config.SECRET_KEY)
+    return serializer.dumps(email, salt=Config.SECURITY_PASSWORD_SALT)
+
+
+def confirm_token(token, expiration=3600):
+    serializer = URLSafeTimedSerializer(Config.SECRET_KEY)
+    try:
+        email = serializer.loads(
+            token, salt=Config.SECURITY_PASSWORD_SALT, max_age=expiration
+        )
+        return email
+    except Exception:       # noqa
+        return False
 
 
 # Routes
@@ -240,13 +320,12 @@ def confirm_email(token):
 
 @app.errorhandler(401)
 def not_found(e):
-    return render_template("401.html")
+    return render_template("401.html", error=e)
 
 
 @app.errorhandler(404)
 def not_found(e):
-    return render_template("404.html")
-
+    return render_template("404.html", error=e)
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -322,7 +401,7 @@ def changepwd():
             db.session.commit()
             flash("Your password is changed!", "success")
         return redirect(url_for('changepwd'))
-    return  render_template('changepwd.html', form=form)
+    return render_template('changepwd.html', form=form)
 
 
 @app.route('/admin')
@@ -334,20 +413,24 @@ def admin():
 
 
 @app.route('/copyright')
-def copyright():
+def my_copyright():
     return render_template('copyright.html')
+
 
 @app.route('/disclaimer')
 def disclaimer():
     return render_template('disclaimer.html')
 
+
 @app.route('/terms')
 def terms():
     return render_template('terms.html')
 
+
 @app.route('/privacy')
 def privacy():
     return render_template('privacy.html')
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -384,9 +467,9 @@ def create_admin():
             db.session.add(user)
             db.session.commit()
             print(f"Admin with email {username} created successfully!")
-        except Exception:
+        except Exception:       # noqa
             print("Couldn't create admin user.")
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)

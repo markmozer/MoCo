@@ -7,12 +7,16 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <link rel="icon" href="{{ url_for('static', filename='/assets/favicon.ico') }}" />
+
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+
+    <!-- Mozer Consulting icon -->
+    <link rel="icon" href="{{ url_for('static', filename='/assets/logo_moco.ico') }}" type="image/x-icon" />
 
     {% block styles %}
+
     <!-- Load Bootstrap-Flask CSS here -->
     {{ bootstrap.load_css() }}
-    <!-- Link to the styles.css here to apply styling to all the child templates.-->
 
     <link
       rel="preconnect"
@@ -26,10 +30,17 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:ital,wght@0,100..900;1,100..900&family=Noto+Serif+Display:ital,wght@0,100..900;1,100..900&display=swap"
     />
+
+    <!-- Link to the styles.css here to apply styling to all the child templates.-->
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
     />
+
+    <style>
+        {% block custom_styles %}{% endblock %}
+    </style>
+
     {% endblock %}
 
     <title>{% block title %}{% endblock %} - Mozer Consulting</title>
