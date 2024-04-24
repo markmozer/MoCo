@@ -17,6 +17,18 @@
     "width" 100;
 }
 
+.navbar {
+    background-color: #363062;
+}
+
+.nav-link {
+    color: #F5F5F5;
+}
+
+.navbar-nav a:hover {
+    color: #F99417;
+}
+
 
 
 /* The actual timeline (the vertical ruler) */
