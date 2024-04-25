@@ -412,6 +412,39 @@ def admin():
     return render_template('admin.html', users=users)
 
 
+@app.route('/user/change/<int:id>', methods=['GET', 'POST'])
+@admin_required
+def change_user(id: int):
+    result = db.session.execute(db.select(User).where(User.id == id))
+    user = result.scalar()
+    if not user:
+        flash('This ID is not valid!', category='error')
+        return redirect(url_for('admin'))
+
+    form = ChgContactDetailsForm()
+    if form.validate_on_submit():
+        # Handle Form submission
+        user.firstname = form.firstname.data
+        user.lastname = form.lastname.data
+        user.mobile = form.mobile.data
+        user.date_of_birth = form.date_of_birth.data
+        user.gender = form.gender.data
+        db.session.commit()
+        flash("Contact details updated", "success")
+        return redirect(url_for('admin'))
+
+    form.username.data = user.username
+    form.firstname.data = user.firstname
+    form.lastname.data = user.lastname
+    form.date_of_birth.data = user.date_of_birth
+    form.mobile.data = user.mobile
+    if user.gender is None:
+        form.gender.data = 'Unspecified'
+    else:
+        form.gender.data = user.gender
+
+    return render_template('change_user.html', form=form)
+
 @app.route('/copyright')
 def my_copyright():
     return render_template('copyright.html')
@@ -472,4 +505,4 @@ def create_admin():
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)

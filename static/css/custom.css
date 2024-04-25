@@ -6975,6 +6975,15 @@ ul.dropdown-menu > li > a {
   border-color: var(--bs-moco-lightgray);
 }
 
+[id]::before {
+  content: "";
+  display: block;
+  height: 75px;
+  margin-top: -75px;
+  visibility: hidden;
+}
+
+}
 /* The actual timeline (the vertical ruler) */
 .main-timeline-2 {
   position: relative;
