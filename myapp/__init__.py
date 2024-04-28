@@ -1,18 +1,10 @@
-from msal import ConfidentialClientApplication
-import requests
-from typing import Optional
-from itsdangerous import URLSafeTimedSerializer
-from datetime import datetime, UTC, date
+from datetime import datetime, UTC
 from flask import Flask, flash, render_template, redirect, request, url_for
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required
-from flask_wtf import FlaskForm
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import Integer, String, Date, DateTime, Boolean
+from flask_login import LoginManager, login_user, current_user, logout_user, login_required
+from sqlalchemy.orm import DeclarativeBase
 from config import Config
-from wtforms import StringField, EmailField, PasswordField, SubmitField, DateField, TextAreaField, SelectField
-from wtforms.validators import DataRequired, Email, Length, EqualTo, Regexp
 from werkzeug.security import generate_password_hash, check_password_hash
 from libgravatar import Gravatar
 from functools import wraps
@@ -31,150 +23,14 @@ db.init_app(app)
 login_manager.init_app(app)
 Bootstrap5(app)
 
-
-class User(UserMixin, db.Model):
-    __tablename__ = "users"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    username: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
-    password: Mapped[str] = mapped_column(String(100), nullable=False)
-    created_on: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now())
-    is_admin: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    is_confirmed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    confirmed_on: Mapped[datetime] = mapped_column(DateTime, nullable=True)
-    firstname: Mapped[str] = mapped_column(String(100), nullable=True, unique=False)
-    lastname: Mapped[str] = mapped_column(String(100), nullable=True, unique=False)
-    mobile: Mapped[str] = mapped_column(String(100), nullable=True, unique=False)
-    date_of_birth: Mapped[date] = mapped_column(Date, nullable=True, unique=False)
-    gender: Mapped[str] = mapped_column(String(10), nullable=False, unique=False, default='U')
-
-    def __init__(self, username, password, is_admin=False, is_confirmed=False, confirmed_on=None):
-        # Hash and salt the password
-        hash_and_salted_password = generate_password_hash(
-            password,
-            method='pbkdf2:sha256',
-            salt_length=8
-        )
-        self.username = username
-        self.password = hash_and_salted_password  # noqa
-        self.created_on = datetime.now(tz=UTC)  # noqa
-        self.is_admin = is_admin  # noqa
-        self.is_confirmed = is_confirmed  # noqa
-        self.confirmed_on = confirmed_on
-
-    def __repr__(self):
-        return f"<email {self.email}>"
-
-
-class RegisterUserForm(FlaskForm):
-    username = EmailField("Username (e-mail)", validators=[DataRequired(), Email()])
-    password = PasswordField("Password", validators=[
-        DataRequired(),
-        Length(min=8),
-        EqualTo(fieldname='confirm'),
-        Regexp(
-            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
-            message="Field must contain uppercase, lowercase, number and special character!"
-        )
-    ])
-    confirm = PasswordField('Confirm Password')
-    submit = SubmitField("Register")
-
-
-class LoginUserForm(FlaskForm):
-    username = EmailField("Username (e-mail)", validators=[DataRequired(), Email()])
-    password = PasswordField("Password", validators=[DataRequired()])
-    submit = SubmitField("Login")
-
-
-class ChgContactDetailsForm(FlaskForm):
-    username = EmailField("Username (e-mail)", render_kw={'readonly': True, 'class': 'disabled-field'}, validators=[])
-    firstname = StringField("Firstname", validators=[DataRequired()])
-    lastname = StringField("Lastname", validators=[DataRequired()])
-    mobile = StringField("Mobile number +#(#)#",
-                         validators=[Regexp(r"^\+[0-9]+\([0-9]+\)[0-9]+$", message="Regex message!")])
-    date_of_birth = DateField("Date of birth", validators=[])
-    gender = SelectField(u'Gender', choices=[('M', 'Male'), ('F', 'Female'), ('U', 'Unspecified')])
-    submit1 = SubmitField("Save changes")
-
-
-class ChgPasswordForm(FlaskForm):
-    old_password = PasswordField("Old password")
-    password = PasswordField("New Password", validators=[
-        DataRequired(),
-        Length(min=8),
-        EqualTo(fieldname='confirm'),
-        Regexp(
-            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
-            message="Field must contain uppercase, lowercase, number and special character!")
-    ])
-    confirm = PasswordField('Confirm Password')
-    submit2 = SubmitField("Change Password")
-
-
-class ContactForm(FlaskForm):
-    name = StringField("Full name", validators=[DataRequired()])
-    email = EmailField("Email", validators=[DataRequired(), Email()])
-    phone = StringField("Phone number")
-    message = TextAreaField("Message", validators=[DataRequired()])
-    submit = SubmitField("Submit")
-
-
-class MSGraphAPI:
-    def __init__(self):
-        self.access_token = self.get_access_token()
-
-    def get_access_token(self):         # noqa
-        authority = f'https://login.microsoftonline.com/{Config.MSAL_TENANT_ID}'
-        scopes = ['https://graph.microsoft.com/.default']
-        msal_app = ConfidentialClientApplication(
-            Config.MSAL_CLIENT_ID,
-            authority=authority,
-            client_credential=Config.MSAL_CLIENT_SECRET
-        )
-        token_response = msal_app.acquire_token_for_client(scopes=scopes)
-        access_token = token_response['access_token']
-
-        if not access_token:
-            print("Failed to acquire token")
-            return None
-        else:
-            print("Token acquired for graph API")
-            return access_token
-
-    def send_email(self, subject: str, body: str, to_recipients: list, cc_recipients: Optional[list] = None):
-        headers = {
-            'Authorization': f'Bearer {self.access_token}',
-            'Content-Type': 'application/json'
-        }
-
-        to_list = [{"emailAddress": {"address": recipient}} for recipient in to_recipients]
-
-        if cc_recipients:
-            cc_list = [{"emailAddress": {"address": recipient}} for recipient in cc_recipients]
-        else:
-            cc_list = []
-
-        # Replace the following email details
-        email_data = {
-            "message": {
-                "subject": subject,
-                "body": {
-                    "contentType": "HTML",
-                    "content": body
-                },
-                "toRecipients": to_list,
-                "ccRecipients": cc_list,
-            }
-        }
-
-        response = requests.post(
-            f'https://graph.microsoft.com/v1.0/users/{Config.UPN}/sendMail',
-            headers=headers,
-            json=email_data
-        )
-
-        print(response.status_code, response.reason)
-
+from myapp.models.user import User                                      # noqa
+from myapp.forms.registeruserform import RegisterUserForm               # noqa
+from myapp.forms.loginuserform import LoginUserForm                     # noqa
+from myapp.forms.chgcontactdetailsform import ChgContactDetailsForm     # noqa
+from myapp.forms.chgpasswordform import ChgPasswordForm                 # noqa
+from myapp.forms.contactform import ContactForm                         # noqa
+from myapp.msgraphapi import MSGraphAPI                                 # noqa
+from myapp.check_token import generate_token, confirm_token             # noqa
 
 with app.app_context():
     db.create_all()
@@ -200,22 +56,6 @@ def logout_required(func):
         return func(*args, **kwargs)
 
     return decorated_function
-
-
-def generate_token(email):
-    serializer = URLSafeTimedSerializer(Config.SECRET_KEY)
-    return serializer.dumps(email, salt=Config.SECURITY_PASSWORD_SALT)
-
-
-def confirm_token(token, expiration=3600):
-    serializer = URLSafeTimedSerializer(Config.SECRET_KEY)
-    try:
-        email = serializer.loads(
-            token, salt=Config.SECURITY_PASSWORD_SALT, max_age=expiration
-        )
-        return email
-    except Exception:       # noqa
-        return False
 
 
 # Routes
@@ -445,6 +285,7 @@ def change_user(id: int):
 
     return render_template('change_user.html', form=form)
 
+
 @app.route('/copyright')
 def my_copyright():
     return render_template('copyright.html')
@@ -505,4 +346,4 @@ def create_admin():
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)
