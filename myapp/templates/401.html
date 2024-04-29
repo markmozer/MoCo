@@ -17,7 +17,7 @@
   <div class="container py-4">
 
 
-    <div class="container-fluid custom-container p-5 mb-4 bg-body-tertiary rounded-3">
+    <div class="container-fluid custom-container p-5 mb-4 rounded-3">
       <div class="row px-3">
         <img src="{{ url_for('static', filename='assets/logo_moco_black_text_below.png') }}" width="200" />
       </div>
@@ -28,7 +28,7 @@
           You ran into a 401, because access to this page is restricted.
         </p>
         <p>
-          Click <a href="{{ url_for('home') }}">here</a> to return to the homepage.
+          Click <a href="{{ url_for('api.home') }}">here</a> to return to the homepage.
         </p>
       </div>
     </div>

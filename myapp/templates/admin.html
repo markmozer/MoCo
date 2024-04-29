@@ -38,12 +38,13 @@
 					<th scope="col">Mobile</th>
 					<th scope="col">Date of Birth</th>
 					<th scope="col">Gender</th>
+					<th scope="col"></th>
 				</tr>
 			  </thead>
 			  <tbody>
 				{% for user in users: %}
 			  	<tr>
-					<th scope="row"><a href="{{ url_for('change_user', id=user.id) }}">{{ user.id }}</a></th>
+					<th scope="row"><a href="{{ url_for('api.change_user', id=user.id) }}">{{ user.id }}</a></th>
 				  	<td>{{ user.username }}</td>
 				  	<td>{{ user.created_on }}</td>
 					<td>{{ user.is_admin }}</td>
@@ -53,6 +54,7 @@
 					<td>{{ user.mobile }}</td>
 					<td>{{ user.date_of_birth }}</td>
 					<td>{{ user.gender }}</td>
+					<td><a href="{{ url_for('api.delete_user', id=user.id) }}"><img src="{{ url_for('static', filename='/assets/svg/trash.svg') }}"></a></td>
 				</tr>
 			  	{% endfor %}
 			  </tbody>

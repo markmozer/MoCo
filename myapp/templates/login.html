@@ -19,7 +19,7 @@
   <div class="container py-4">
 
 
-    <div class="container-fluid custom-container p-5 mb-4 bg-body-tertiary rounded-3">
+    <div class="container-fluid custom-container p-5 mb-4 rounded-3">
       <div class="row px-3">
         <img src="{{ url_for('static', filename='assets/logo_moco_black_text_below.png') }}" />
       </div>
@@ -28,7 +28,7 @@
         {{render_form(form, extra_classes="", novalidate=True, button_map={"submit": "dark"}) }}
       </div>
       <div class="row px-3">
-        <p>New visitor? Register <a href="{{ url_for('register') }}">here</a>!</p>
+        <p>New visitor? Register <a href="{{ url_for('api.register') }}">here</a>!</p>
       </div>
     </div>
 

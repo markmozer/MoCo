@@ -26,9 +26,9 @@
           </p>
 
         {% if not current_user.is_authenticated: %}
-          <a class="btn btn-dark px-5 mb-5" role="button" aria-disabled="true" href="{{ url_for('register') }}">Register now!</a>
+          <a class="btn btn-dark px-5 mb-5" role="button" aria-disabled="true" href="{{ url_for('api.register') }}">Register now!</a>
         {% else: %}
-          <a class="btn btn-dark px-5 mb-5 disabled" role="button" aria-disabled="true" href="{{ url_for('register') }}">Already logged in!</a>
+          <a class="btn btn-dark px-5 mb-5 disabled" role="button" aria-disabled="true" href="{{ url_for('api.register') }}">Already logged in!</a>
         {% endif %}
         </div>
       </div>
