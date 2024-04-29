@@ -7,7 +7,8 @@ from sqlalchemy.orm import DeclarativeBase
 from datetime import datetime, UTC
 from libgravatar import Gravatar
 from config import Config
-
+from myapp.msgraphapi import MSGraphAPI
+from myapp.check_token import generate_token, confirm_token
 
 class Base(DeclarativeBase):  # noqa
     pass
@@ -32,8 +33,6 @@ def create_app():
     from myapp.forms.chgcontactdetailsform import ChgContactDetailsForm     # noqa
     from myapp.forms.chgpasswordform import ChgPasswordForm                 # noqa
     from myapp.forms.contactform import ContactForm                         # noqa
-    from myapp.msgraphapi import MSGraphAPI                                 # noqa
-    from myapp.check_token import generate_token, confirm_token             # noqa
 
     with app.app_context():
         db.create_all()
