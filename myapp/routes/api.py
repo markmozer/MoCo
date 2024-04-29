@@ -22,7 +22,7 @@ def admin_required(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated or not current_user.is_admin:
-            flash("You are not authorized for this page.", "error")
+            flash("You are not authorized for this page.", 'error')
             return redirect(url_for('api.home'))
         return func(*args, **kwargs)
 
@@ -33,7 +33,7 @@ def logout_required(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
         if current_user.is_authenticated:
-            flash("You are already authenticated.", "info")
+            flash("You are already authenticated.", 'info')
             return redirect(url_for('api.home'))
         return func(*args, **kwargs)
 
@@ -55,7 +55,7 @@ def home():
             to_recipients=[request.form.get('email')],
             cc_recipients=[Config.UPN]
         )
-        flash("Your message has been sent successfully!", "success")
+        flash("Your message has been sent successfully!", 'success')
         return redirect(url_for('api.home') + "#top")
     return render_template('index.html', form=form)
 
@@ -69,7 +69,7 @@ def register():
         result = db.session.execute(db.select(User).where(User.username == form.username.data))
         user = result.scalar()
         if user:
-            flash('Username is already registered! Please login', "info")
+            flash('Username is already registered! Please login', 'info')
             return redirect(url_for('api.login'))
         # Add new user to the database
         new_user = User(
@@ -107,7 +107,7 @@ def inactive():
 @login_required
 def resend_confirmation():
     if current_user.is_confirmed:
-        flash("Your account has already been confirmed.", "success")
+        flash("Your account has already been confirmed.", 'success')
         return redirect(url_for('api.home'))
     token = generate_token(current_user.username)
     confirm_url = url_for('api.confirm_email', token=token, _external=True)
@@ -127,16 +127,16 @@ def confirm_email(token):
     result = db.session.execute(db.select(User).where(User.username == email))
     user = result.scalar()
     if not user:
-        flash("The confirmation link is invalid or has expired.", "danger")
+        flash("The confirmation link is invalid or has expired.", 'danger')
         return redirect(url_for('api.home'))
     if user.is_confirmed:
-        flash("Account already confirmed.", "success")
+        flash("Account already confirmed.", 'success')
         return redirect(url_for('api.home'))
     user.is_confirmed = True
     user.confirmed_on = datetime.now()
     db.session.add(user)
     db.session.commit()
-    flash("You have confirmed your account. Thanks!", "success")
+    flash("You have confirmed your account. Thanks!", 'success')
     return redirect(url_for('api.home'))
 
 
@@ -154,11 +154,11 @@ def login():
         result = db.session.execute(db.select(User).where(User.username == form.username.data))
         user = result.scalar()
         if not user:
-            flash(f'User {form.username.data} is not registered! Try again or proceed to registration.', "warning")
+            flash(f'User {form.username.data} is not registered! Try again or proceed to registration.', 'warning')
             return redirect(url_for('api.login'))
         # Check if provided password is correct
         if not check_password_hash(user.password, form.password.data):
-            flash("The password you've entered is incorrect! Please try again", "warning")
+            flash("The password you've entered is incorrect! Please try again", 'warning')
             return redirect(url_for('api.login'))
         login_user(user)
         return redirect(url_for('api.home'))
@@ -183,7 +183,7 @@ def profile():
         current_user.date_of_birth = form.date_of_birth.data
         current_user.gender = form.gender.data
         db.session.commit()
-        flash("Contact details updated", "success")
+        flash("Contact details updated", 'success')
         redirect(url_for('api.profile'))
 
     form.username.data = current_user.username
@@ -205,7 +205,7 @@ def changepwd():
     if form.validate_on_submit():
         # Handle Form2 submission
         if not check_password_hash(current_user.password, form.old_password.data):
-            flash("The old password you've entered is incorrect! Please try again", "warning")
+            flash("The old password you've entered is incorrect! Please try again", 'warning')
         else:
             # Hash and salt the password
             hash_and_salted_password = generate_password_hash(
@@ -216,7 +216,7 @@ def changepwd():
 
             current_user.password = hash_and_salted_password
             db.session.commit()
-            flash("Your password is changed!", "success")
+            flash("Your password is changed!", 'success')
         return redirect(url_for('api.changepwd'))
     return render_template('changepwd.html', form=form)
 
@@ -247,7 +247,7 @@ def change_user(id: int):
         user.date_of_birth = form.date_of_birth.data
         user.gender = form.gender.data
         db.session.commit()
-        flash("Contact details updated", "success")
+        flash("Contact details updated", 'success')
         return redirect(url_for('api.admin'))
 
     form.username.data = user.username
@@ -273,7 +273,7 @@ def delete_user(id: int):
     else:
         db.session.delete(user)
         db.session.commit()
-        flash(f'User {user.id} was deleted!')
+        flash(f'User {user.id} was deleted!', category='success')
     return redirect(url_for('api.admin'))
 
 
@@ -295,27 +295,3 @@ def terms():
 @api.route('/privacy')
 def privacy():
     return render_template('privacy.html')
-
-
-@api.cli.command("create_admin")
-def create_admin():
-    """Creates the admin user."""
-    username = input("Enter email address: ")
-    password = input("Enter password: ")
-    confirm_password = input("Enter password again: ")
-    if password != confirm_password:
-        print("Passwords don't match")
-    else:
-        try:
-            user = User(
-                username=username,
-                password=password,
-                is_admin=True,
-                is_confirmed=True,
-                confirmed_on=datetime.now(),
-            )
-            db.session.add(user)
-            db.session.commit()
-            print(f"Admin with email {username} created successfully!")
-        except Exception:       # noqa
-            print("Couldn't create admin user.")
