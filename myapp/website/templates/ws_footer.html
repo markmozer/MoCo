@@ -1,0 +1,47 @@
+<div class="container-fluid bg-dark mt-5 py-5 text-moco-lightgray">
+  <div class="container">
+    <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5">
+      <div class="col mb-3">
+        <a href="/" class="d-flex align-items-center mb-3">
+          <img class="bi" src="{{ url_for('static', filename='/img/logo_moco_white.png') }}" width="80">
+        </a>
+        <p>© {{ now.year }} Mozer Consulting</p>
+      </div>
+
+    <div class="col mb-3">
+
+    </div>
+
+    <div class="col mb-3">
+      <h5 class="text-moco-orange">General</h5>
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2"><a href="{{ url_for('website_bp.home') + '#top' }}" class="link-moco-lightgray text-decoration-none p-0">Home</a></li>
+        <li class="nav-item mb-2"><a href="{{ url_for('website_bp.home') + '#vision' }}" class="link-moco-lightgray text-decoration-none p-0">Vision</a></li>
+        <li class="nav-item mb-2"><a href="{{ url_for('website_bp.home') + '#mission' }}" class="link-moco-lightgray text-decoration-none p-0">Mission</a></li>
+        <li class="nav-item mb-2"><a href="{{ url_for('website_bp.home') + '#about' }}" class="link-moco-lightgray text-decoration-none p-0">About</a></li>
+        <li class="nav-item mb-2"><a href="{{ url_for('website_bp.home') + '#contact' }}" class="link-moco-lightgray text-decoration-none p-0">Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="col mb-3">
+      <h5 class="text-moco-orange">Detailed</h5>
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2"><a href="{{ url_for('website_bp.home') + '#expertise' }}" class="link-moco-lightgray text-decoration-none p-0">Expertise</a></li>
+        <li class="nav-item mb-2"><a href="{{ url_for('website_bp.home') + '#experience' }}" class="link-moco-lightgray text-decoration-none p-0">Experience</a></li>
+        <li class="nav-item mb-2"><a href="{{ url_for('website_bp.home') + '#skills' }}" class="link-moco-lightgray text-decoration-none p-0">Skills</a></li>
+        <li class="nav-item mb-2"><a href="{{ url_for('website_bp.home') + '#python' }}" class="link-moco-lightgray text-decoration-none p-0">Python+Web</a></li>
+      </ul>
+    </div>
+
+    <div class="col mb-3">
+      <h5 class="text-moco-orange">Legal</h5>
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2"><a href="{{ url_for('website_bp.my_copyright') }}" class="link-moco-lightgray text-decoration-none p-0">Copyright notice</a></li>
+        <li class="nav-item mb-2"><a href="{{ url_for('website_bp.disclaimer') }}" class="link-moco-lightgray text-decoration-none p-0">Disclaimer</a></li>
+        <li class="nav-item mb-2"><a href="{{ url_for('website_bp.terms') }}" class="link-moco-lightgray text-decoration-none p-0">Terms & Conditions</a></li>
+        <li class="nav-item mb-2"><a href="{{ url_for('website_bp.privacy') }}" class="link-moco-lightgray text-decoration-none p-0">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </footer>
+    </div>
+</div>

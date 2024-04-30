@@ -1,0 +1,50 @@
+<!--section Navbar-->
+<nav class="navbar navbar-expand-md sticky-top navbar-dark bg-dark" aria-label="Website Navbar">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('website_bp.home')+'#top' }}">
+      <img src="{{ url_for('static', filename='/img/logo_moco_white_text_right.png') }}" alt="Mozer Consulting logo"  height="32" class="d-inline-block align-text-center">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#websiteNavbar" aria-controls="websiteNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="websiteNavbar">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#contact">Contact</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">About</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#overview">Overview</a></li>
+            <li><a class="dropdown-item" href="#vision">Vision</a></li>
+            <li><a class="dropdown-item" href="#mission">Mission</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#expertise">Expertise</a></li>
+            <li><a class="dropdown-item" href="#experience">Experience</a></li>
+            <li><a class="dropdown-item" href="#skills">Skills</a></li>
+            <li><a class="dropdown-item" href="#python">Python+Web</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#about">About me</a></li>
+            <li><a class="dropdown-item" href="#contact">Contact</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Our partners</a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="https://www.move-it.international/" target="_blank">
+                <img src="{{ url_for('static', filename='/img/logo_moveit.jpg')}}" height="16" />
+                MOVE-IT International
+              </a>
+            </li>
+            <li><a class="dropdown-item" href="https://www.energyconservation.com.au/" target="_blank">Energy Conservation</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="https://getbootstrap.com/" target="_blank">Bootstrap</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!--end section Navbar-->

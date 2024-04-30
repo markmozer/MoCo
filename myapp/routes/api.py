@@ -4,7 +4,7 @@ from myapp.forms.registeruserform import RegisterUserForm               # noqa
 from myapp.forms.loginuserform import LoginUserForm                     # noqa
 from myapp.forms.chgcontactdetailsform import ChgContactDetailsForm     # noqa
 from myapp.forms.chgpasswordform import ChgPasswordForm                 # noqa
-from myapp.forms.contactform import ContactForm                         # noqa
+from myapp.website.forms.contactform import ContactForm                         # noqa
 from myapp.msgraphapi import MSGraphAPI                                 # noqa
 from myapp.check_token import generate_token, confirm_token             # noqa
 

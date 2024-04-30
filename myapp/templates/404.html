@@ -1,25 +1,37 @@
 {% extends "base.html" %}
 
-{% block custom_styles %}
-
-.custom-container {
-    max-width: 700px;
-    padding: 1rem;
-}
-
+{% block favicon %}
+    <link rel="icon" href="{{ url_for('static', filename='img/logo_moco.ico') }}" type="image/x-icon" />
 {% endblock %}
 
-{% block title %}Not found{% endblock %}
+{% block custom_styles %}
+    .custom-container {
+        max-width: 700px;
+        padding: 1rem;
+    }
+{% endblock %}
 
-{% block content %}
+{% block styles %}
+    {{ super() }}
+{% endblock %}
 
-<main>
+{% block title %}Mozer Consulting - 404{% endblock %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block header %}
+    {% include 'ws_navbar.html' %}
+{% endblock %}
+
+{% block main %}
   <div class="container py-4">
 
 
     <div class="container-fluid custom-container p-5 mb-4 rounded-3">
       <div class="row px-3">
-        <img src="{{ url_for('static', filename='assets/logo_moco_black_text_below.png') }}" width="200" />
+        <img src="{{ url_for('static', filename='img/logo_moco_black_text_below.png') }}" width="200" />
       </div>
       <div class="container-fluid py-5">
         <h1>Something went wrong!</h1>
@@ -28,7 +40,7 @@
           You ran into a 404, because this page doesn't exist anymore.
         </p>
         <p>
-          Click <a href="{{ url_for('api.home') }}">here</a> to return to the homepage.
+          Click <a href="{{ url_for('website_bp.home') }}">here</a> to return to the homepage.
         </p>
       </div>
     </div>
@@ -36,6 +48,8 @@
 
 
   </div>
-</main>
+{% endblock %}
 
+{% block footer %}
+    {% include 'ws_footer.html' %}
 {% endblock %}

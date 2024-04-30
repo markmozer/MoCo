@@ -1,13 +1,28 @@
 {% extends "base.html" %}
 
-{% block title %}Terms{% endblock %}
+{% block favicon %}
+    <link rel="icon" href="{{ url_for('static', filename='img/logo_moco.ico') }}" type="image/x-icon" />
+{% endblock %}
 
-{% from "bootstrap5/form.html" import render_form, render_field %}
+{% block custom_styles %}
 
-{% block content %}
+{% endblock %}
 
+{% block styles %}
+    {{ super() }}
+{% endblock %}
 
+{% block title %}Mozer Consulting - Copyright Notice{% endblock %}
 
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block header %}
+    {% include 'ws_navbar.html' %}
+{% endblock %}
+
+{% block main %}
 <div class="container rounded-3 mt-5"> <!-- Main container -->
 
 	<div class="row"> <!-- Row for page title -->
@@ -70,4 +85,8 @@
 
 </div> <!-- Main container-->
 
+{% endblock %}
+
+{% block footer %}
+    {% include 'ws_footer.html' %}
 {% endblock %}

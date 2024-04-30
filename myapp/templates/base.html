@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- block head start -->
     {% block head %}
     <meta charset="UTF-8" />
     <meta
@@ -10,14 +11,13 @@
 
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
 
-    <!-- Mozer Consulting icon -->
-    <link rel="icon" href="{{ url_for('static', filename='/assets/logo_moco.ico') }}" type="image/x-icon" />
+    <!-- Favicon -->
+    {% block favicon %}{% endblock %}
 
+    <!-- block styles start -->
     {% block styles %}
 
-    <!-- Load Bootstrap-Flask CSS here -->
-    {{ bootstrap.load_css() }}
-
+    <!-- Font Noto Sans Display-->
     <link
       rel="preconnect"
       href="https://fonts.googleapis.com"
@@ -31,34 +31,50 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:ital,wght@0,100..900;1,100..900&family=Noto+Serif+Display:ital,wght@0,100..900;1,100..900&display=swap"
     />
 
-    <!-- Link to the styles.css here to apply styling to all the child templates.-->
+    <!-- Load Bootstrap-Flask CSS here -->
+    {{ bootstrap.load_css() }}
+
+
+    <!-- Load project styles from static/css-->
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/custom.css') }}"
     />
 
+    <!-- Load custom styles-->
     <style>
         {% block custom_styles %}{% endblock %}
     </style>
 
     {% endblock %}
+    <!-- block styles end -->
 
-    <title>{% block title %}{% endblock %} - Mozer Consulting</title>
+    <!-- Title -->
+    <title>{% block title %}{% endblock %}</title>
     {% endblock %}
+    <!--block head end-->
   </head>
-<body>
+  <body>
 
-    {% include 'navbar.html' %}
 
-    {% include 'alert.html' %}
+  {% block header %}
+  {% endblock %}
 
-    {% block content %}
-    {% endblock %}
+  {% block main %}
+  {% endblock %}
 
-    {% include 'footer.html' %}
+  {% block footer %}
+  {% endblock %}
 
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-eMNCOe7tC1doHpGo6L1NiUywogGyR7oTCIhPBJGmI4LKNKej6qKkGGXK07R8Jfug" crossorigin="anonymous"></script>
 
+    {% block scripts %}
+    <!-- Optional JavaScript -->
     {{ bootstrap.load_js() }}
-</body>
+
+    <script type="text/javascript">
+      {% block custom_scripts %}{% endblock %}
+    </script>
+    {% endblock %}  <!--block scripts-->
+
+  </body>
 </html>
